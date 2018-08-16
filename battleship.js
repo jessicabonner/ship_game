@@ -32,6 +32,19 @@ function rotate(){
     
     var loc=this.getBoundingClientRect()
     if (checkOverlap(this,loc.left,loc.right,loc.top,loc.bottom)){
+     /*     
+        this part cant be done until we make note of ship placement!!
+        if (//check that on board){
+            if (!checkOnBoard(cell, Math.round(this.offsetHeight/50), 
+            Math.round(this.offsetWidth/50)){
+                const height=this.offsetHeight+"px"
+                const width=this.offsetWidth+"px"
+
+                this.style.width=height
+                this.style.height=width
+            }
+        } */
+        
         const height=this.offsetHeight+"px"
         const width=this.offsetWidth+"px"
 
@@ -49,8 +62,7 @@ function dragstart(e){
     var ship_width=ship.offsetWidth
     var cells_height=Math.round(ship_height/50)
     var cells_width=Math.round(ship_width/50)
-    console.log(cells_width)
-    console.log(cells_height)
+    
     localStorage.setItem("cells_height", cells_height)
     localStorage.setItem("cells_width", cells_width)
 
@@ -91,12 +103,12 @@ function colorCells(color, starting_cell){
     for (i = 1; i < cells_height; i++) {
         
        document.getElementById('board').rows[(row_index+i)].cells[cell_index].style.backgroundColor=color;
-       console.log('vertical: '+i)
+
     }
     
     for (i = 1; i < cells_width; i++) {
         document.getElementById('board').rows[row_index].cells[(cell_index+i)].style.backgroundColor=color;
-        console.log('horizontal: '+ i)
+
     }
     
    }
@@ -179,18 +191,30 @@ function checkOverlap(current,current_left, current_right, current_top, current_
     for(const ship of ships) {
         if (ship.id != current.id){
             var compare_loc=ship.getBoundingClientRect()
-            
+
             if (((current_right<=compare_loc.right)&&(current_right>=compare_loc.left)) || 
                 ((current_left<=compare_loc.right)&&(current_left>=compare_loc.left))){
                     
                     if (((current_top>=compare_loc.top)&&(current_top<=compare_loc.bottom)) || 
                     ((current_bottom>=compare_loc.top)&&(current_bottom<=compare_loc.bottom))){
-      //                  console.log("overlap")
                         return true
                         
                     } else if (((compare_loc.top>=current_top)&&(compare_loc.top<=current_bottom)) || 
                     ((compare_loc.bottom>=current_top)&&(compare_loc.bottom<=current_bottom))){
-        //                console.log("overlap")
+                        return true
+                    
+                    }
+                }
+                
+            if (((current_bottom<=compare_loc.bottom)&&(current_bottom>=compare_loc.top)) || 
+                ((current_top<=compare_loc.bottom)&&(current_top>=compare_loc.top))){
+                    
+                    if (((current_left>=compare_loc.left)&&(current_left<=compare_loc.right)) || 
+                    ((current_right>=compare_loc.left)&&(current_right<=compare_loc.right))){
+                        return true
+                        
+                    } else if (((compare_loc.left>=current_left)&&(compare_loc.left<=current_right)) || 
+                    ((compare_loc.right>=current_left)&&(compare_loc.right<=current_right))){
                         return true
                     
                     }
