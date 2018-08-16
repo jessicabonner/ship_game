@@ -43,25 +43,74 @@ function rotate(){
   
 function dragstart(e){
     e.dataTransfer.setData("ship", e.target.id);
-    console.log(e.target.id)
+    const ship=document.getElementById(e.target.id)
+    
+    var ship_height=ship.offsetHeight
+    var ship_width=ship.offsetWidth
+    var cells_height=Math.round(ship_height/50)
+    var cells_width=Math.round(ship_width/50)
+    console.log(cells_width)
+    console.log(cells_height)
+    localStorage.setItem("cells_height", cells_height)
+    localStorage.setItem("cells_width", cells_width)
 
 
 }
   
 function dragover(e) {
   e.preventDefault()
-
+    if (this.tagName=="TD" && 
+    !checkOnBoard(this, parseInt(localStorage.getItem("cells_width")), 
+        parseInt(localStorage.getItem("cells_height")))){
+    colorCells("lightblue", this)
+    this.style.backgroundColor="lightblue"
+  }
 }
 function dragenter(e) {
   e.preventDefault()
-  if (this.tagName == "TD"){
-    this.style.backgroundColor="lightblue"
+  
+  
+    
+  
+   
+}
+
+function colorCells(color, starting_cell){
+   var cells_height = undefined;
+   var cells_width = undefined;
+   if(localStorage.getItem("cells_height")&&localStorage.getItem("cells_width")){
+    cells_height = localStorage.getItem("cells_height");
+    cells_width = localStorage.getItem("cells_width");
+    
+
+    
+    var cell_index=starting_cell.cellIndex
+    var row_index=starting_cell.parentNode.rowIndex
+    
+    if (cell_index&&row_index){
+    for (i = 1; i < cells_height; i++) {
+        
+       document.getElementById('board').rows[(row_index+i)].cells[cell_index].style.backgroundColor=color;
+       console.log('vertical: '+i)
+    }
+    
+    for (i = 1; i < cells_width; i++) {
+        document.getElementById('board').rows[row_index].cells[(cell_index+i)].style.backgroundColor=color;
+        console.log('horizontal: '+ i)
+    }
+    
+   }
    }
 }
 
+
  function dragleave(e) {
-    this.style.backgroundColor=null
+    if (!checkOnBoard(this, parseInt(localStorage.getItem("cells_width")), parseInt(localStorage.getItem("cells_height")))){
+        colorCells(null, this);
+        this.style.backgroundColor=null
+    }
   }
+  
 function drop(e) {
     //console.log(e.dataTransfer.getData("ship"))
   const ship = document.getElementById(e.dataTransfer.getData("ship"));
@@ -76,14 +125,19 @@ function drop(e) {
     ship_top=cell_loc.top
     ship_bottom=ship_top+ship.offsetHeight
     ship_right=ship_left+ship.offsetWidth
-    if (!checkOverlap(ship, ship_left, ship_right, ship_top, ship_bottom)){
+    if (!checkOverlap(ship, ship_left, ship_right, ship_top, ship_bottom) && 
+    !checkOnBoard(this, Math.round(ship.offsetWidth/50),Math.round(ship.offsetHeight/50))){
         ship.style.position="absolute"
         board.append(ship)
         ship.style.left=cell_loc.left-board_loc.left+'px'
         ship.style.top=cell_loc.top-board_loc.top+'px'
 
     }
-    this.style.backgroundColor=null
+    if (!checkOnBoard(this, parseInt(localStorage.getItem("cells_width")), parseInt(localStorage.getItem("cells_height")))){
+
+        colorCells(null, this)
+        this.style.backgroundColor=null
+    }
     
     
   } else {
@@ -93,16 +147,35 @@ function drop(e) {
     ship.style.top=null
   }
   
+  if(localStorage.getItem("cells_width")){
+    localStorage.removeItem("cells_width");
+  }
+  if(localStorage.getItem("cells_height")){
+    localStorage.removeItem("cells_height");
+  }
+  
   
 
 }
 
+function checkOnBoard(starting_cell, ship_width, ship_height){
+    
+    var cell_index=starting_cell.cellIndex
+    var row_index=starting_cell.parentNode.rowIndex
+    
+    
+    if (cell_index+ship_width>11){
+        return true
+    } else if (row_index+ship_height>11){
+        return true
+    } else {
+        return false
+    }
+    
+}
+
 function checkOverlap(current,current_left, current_right, current_top, current_bottom) {
-    //console.log("checking overlap")
-    //console.log(current_left)
-    //console.log(current_right)
-    //console.log(current_top)
-    //console.log(current_bottom)
+
     for(const ship of ships) {
         if (ship.id != current.id){
             var compare_loc=ship.getBoundingClientRect()
