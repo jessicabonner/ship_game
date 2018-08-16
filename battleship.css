@@ -1,0 +1,62 @@
+    #board {
+        display: block;
+        
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        
+    } 
+    
+    td {
+        width: 50px;
+        height: 50px;
+        border: 1px solid black;
+        
+    }
+    
+    #ships{
+        width:300px;
+        height:300px;
+        position:absolute;
+        top:40%;
+        left:15%
+    }
+    
+    #patrol{
+        width:100px;
+        height:40px;
+        background:grey;
+        border-radius:50px;
+        margin: 5px 5px 5px 5px;
+        
+    }
+    #sub{
+        width:155px;
+        height:40px;
+        background:grey;
+        border-radius:50px;
+        margin: 5px 5px 5px 5px;
+    } 
+    
+    #destroyer{
+        width:155px;
+        height:40px;
+        background:grey;
+        border-radius:50px;
+        margin: 5px 5px 5px 5px;
+    }
+    #battleship{
+        width:210px;
+        height:40px;
+        background:grey;
+        border-radius:50px;
+        margin: 5px 5px 5px 5px;
+    }
+    #carrier{
+        width:265px;
+        height:40px;
+        background:grey;
+        border-radius:50px;
+        margin: 5px 5px 5px 5px;
+    }
